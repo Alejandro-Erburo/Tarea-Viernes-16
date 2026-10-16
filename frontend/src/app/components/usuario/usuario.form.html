@@ -1,0 +1,63 @@
+<h1>{{ esEdicion ? 'Editar usuario' : 'Crear usuario' }}</h1>
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+
+@if (!esEdicion || usuario) {
+    <form (submit)="$event.preventDefault(); guardar()">  
+        <label for="username">Nombre de usuario</label>
+        <input
+            id="username"
+            type="text"
+            [formField]="usuarioForm.username"
+        />
+        <label for="nombres">Nombres</label>
+            <input
+                id="nombres"
+                type="text"
+                [formField]="usuarioForm.nombres"
+            />
+        <label for="apellidos">Apellidos</label>
+            <input 
+                id="apellidos"
+                type="text"
+                [formField]="usuarioForm.apellidos"
+            />
+        <label for="fecha_nacimiento">Fecha de nacimiento</label>
+            <input
+                id="fecha_nacimiento"
+                type="date"
+                [formField]="usuarioForm.fecha_nacimiento"
+            />
+        <label>Grupos</label>
+            @for (grupo of ['user', 'admin', 'superadmin']; track grupo) {
+                <label>
+                    <input
+                    type="checkbox"
+                    [checked]="datosFormulario().grupos.includes(grupo)"
+                    (change)="cambiarGrupo(grupo)"
+                    />
+                    {{ grupo }}
+                </label>
+            }
+
+        <label for="activo">Estado</label>
+            <select
+                id="activo"
+                #estado
+                [value]="datosFormulario().activo ? 'true' : 'false'"
+                (change)="cambiarActivo(estado.value === 'true')"
+            >
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+            </select>
+        
+        <div class="acciones">
+            <button type="submit">
+                {{ esEdicion ? 'Guardar cambios' : 'Crear usuario' }}
+            </button>
+            <a routerLink="/usuarios">Cancelar</a>
+        </div>
+    </form>  
+}

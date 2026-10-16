@@ -1,0 +1,71 @@
+@if (modoFormulario()) {
+  <h2>{{ tarea() ? 'Editar tarea' : 'Crear tarea' }}</h2>
+
+  @if (error) {
+    <p>{{ error }}</p>
+  }
+
+  <form (submit)="$event.preventDefault(); guardarFormulario()">
+
+    <label>Título</label>
+    <input type="text" [formField]="tareaForm.titulo" />
+
+    <label>Descripción</label>
+    <textarea [formField]="tareaForm.descripcion"></textarea>
+
+    <label>ID del creador</label>
+    <input type="number" [formField]="tareaForm.id_creador" />
+
+    <label>Grupo</label>
+    <select
+      #grupo
+      [value]="datos().grupo"
+      (change)="cambiarGrupo(grupo.value)"
+    >
+      <option value="user">Usuario</option>
+      <option value="admin">Administrador</option>
+      <option value="superadmin">Superadministrador</option>
+    </select>
+
+    <label>Prioridad</label>
+    <select
+      #prioridad
+      [value]="datos().prioridad"
+      (change)="cambiarPrioridad($any(prioridad.value))"
+    >
+      <option value="0:baja">Baja</option>
+      <option value="1:media">Media</option>
+      <option value="2:alta">Alta</option>
+    </select>
+
+    <label>Estado</label>
+    <select
+      #estado
+      [value]="datos().estado"
+      (change)="cambiarEstado(estado.value)"
+    >
+      <option value="pendiente">Pendiente</option>
+      <option value="finalizada">Finalizada</option>
+    </select>
+
+    <div>
+      <button type="submit">Guardar tarea</button>
+      <a routerLink="/tareas">Cancelar</a>
+    </div>
+  </form>
+
+} @else if (tarea(); as t) {
+
+  <article class="tarjeta">
+    <h3>{{ t.titulo }}</h3>
+    <p>{{ t.descripcion }}</p>
+    <p><strong>Prioridad:</strong> {{ t.prioridad }}</p>
+    <p><strong>Estado:</strong> {{ t.estado }}</p>
+
+    <a [routerLink]="['/tareas', t.id_tarea]">Editar</a>
+
+    <button type="button" (click)="eliminar.emit(t.id_tarea)">
+      Eliminar
+    </button>
+  </article>
+}

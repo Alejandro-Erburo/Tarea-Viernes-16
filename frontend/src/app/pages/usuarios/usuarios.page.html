@@ -1,0 +1,41 @@
+<h1>Usuarios</h1>
+<a routerLink="/usuarios/crear">Crear nuevo usuario</a>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Nombre completo</th>
+            <th>Fecha de nacimiento</th>
+            <th>Grupos</th>
+            <th>Activo/Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @for (usuario of usuarios; track usuario.id_usuario){
+        <tr>
+            <td>{{ usuario.id_usuario }}</td>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.nombre_completo }}</td>
+            <td>{{ usuario.fecha_nacimiento }}</td>
+            <td>{{ usuario.grupos }}</td>
+            <td>{{ usuario.activo }}</td>
+            <td>
+                <a [routerLink]="['/usuarios', usuario.id_usuario]">
+                    Editar
+                </a>
+                <button (click)="eliminar(usuario.id_usuario)">
+                    Eliminar
+                </button>
+            </td>
+        </tr>
+        } @empty{
+            <tr>
+                <!--colspan="7" indica que esa celda ocupa las siete columnas de la tabla.-->
+                <td colspan = "7">No hay usuarios registrados.</td>
+            </tr>
+        }
+    </tbody>
+</table>

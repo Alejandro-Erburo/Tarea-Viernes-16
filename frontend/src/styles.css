@@ -1,0 +1,131 @@
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #243247;
+  background-color: #f3f6fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+app-root {
+  display: block;
+  max-width: 1150px;
+  margin: 35px auto;
+  padding: 24px;
+}
+
+h1, h2, h3 {
+  color: #172b4d;
+}
+
+nav {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 30px;
+  padding: 18px;
+  background: #183b70;
+  border-radius: 10px;
+}
+
+nav a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a {
+  color: #1769c2;
+}
+
+button, a {
+  cursor: pointer;
+}
+
+button {
+  padding: 9px 15px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: white;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 13px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+  background: #e8effa;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 550px;
+  padding: 25px;
+  background: white;
+  border-radius: 10px;
+}
+
+input:not([type="checkbox"]), select, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.tarjeta {
+  background: white;
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 3px 10px #0000000a;
+}
+
+.tarjeta button {
+  margin-left: 15px;
+}
+
+.contenedor-tareas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.error {
+  color: #dc2626;
+}
+
+@media (max-width: 650px) {
+  app-root {
+    margin: 10px auto;
+    padding: 12px;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}

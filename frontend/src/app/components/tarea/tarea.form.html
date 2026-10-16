@@ -1,0 +1,73 @@
+<h1>{{ esEdicion ? 'Editar tarea' : 'Crear tarea' }}</h1>
+
+@if (error) {
+  <p>{{ error }}</p>
+}
+
+@if (!esEdicion || tarea) {
+  <form (submit)="$event.preventDefault(); guardar()">
+
+    <label for="titulo">Título</label>
+    <input
+      id="titulo"
+      type="text"
+      [formField]="tareaForm.titulo"
+    />
+
+    <label for="descripcion">Descripción</label>
+    <textarea
+      id="descripcion"
+      [formField]="tareaForm.descripcion"
+    ></textarea>
+
+    <label for="creador">ID del creador</label>
+    <input
+      id="creador"
+      type="number"
+      [formField]="tareaForm.id_creador"
+    />
+
+    <label for="grupo">Grupo</label>
+    <select
+      id="grupo"
+      #grupo
+      [value]="datos().grupo"
+      (change)="cambiarGrupo(grupo.value)"
+    >
+      <option value="user">Usuario</option>
+      <option value="admin">Administrador</option>
+      <option value="superadmin">Superadministrador</option>
+    </select>
+
+    <label for="prioridad">Prioridad</label>
+    <select
+      id="prioridad"
+      #prioridad
+      [value]="datos().prioridad"
+      (change)="cambiarPrioridad($any(prioridad.value))"
+    >
+      <option value="0:baja">Baja</option>
+      <option value="1:media">Media</option>
+      <option value="2:alta">Alta</option>
+    </select>
+
+    <label for="estado">Estado</label>
+    <select
+      id="estado"
+      #estado
+      [value]="datos().estado"
+      (change)="cambiarEstado(estado.value)"
+    >
+      <option value="pendiente">Pendiente</option>
+      <option value="finalizada">Finalizada</option>
+    </select>
+
+    <div>
+      <button type="submit">
+        {{ esEdicion ? 'Guardar cambios' : 'Crear tarea' }}
+      </button>
+
+      <a routerLink="/tareas">Cancelar</a>
+    </div>
+  </form>
+}

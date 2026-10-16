@@ -1,0 +1,14 @@
+<h1>Listado de tareas</h1>
+
+<a routerLink="/tareas/crear">Crear nueva tarea</a>
+
+<section class="contenedor-tareas">
+  @for (tarea of tareas; track tarea.id_tarea) {
+    <app-tarea-card
+      [tarea]="tarea"
+      (eliminar)="eliminar($event)"
+    />
+  } @empty {
+    <p>No hay tareas registradas.</p>
+  }
+</section>
