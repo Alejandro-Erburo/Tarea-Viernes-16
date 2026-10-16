@@ -4,7 +4,7 @@
   <p class="error">{{ error }}</p>
 }
 
-@if (!esEdicion || usuario) {
+@if (!esEdicion || usuario()) {
     <form (submit)="$event.preventDefault(); guardar()">  
         <label for="username">Nombre de usuario</label>
         <input

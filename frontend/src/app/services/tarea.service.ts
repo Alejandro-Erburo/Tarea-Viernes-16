@@ -1,58 +1,55 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Tarea } from '../models/tarea.model';
+
+type DatosTarea = Omit<Tarea, 'id_tarea' | 'creada' | 'estado'>;
 
 @Injectable({
   providedIn: 'root'
 })
 export class TareaService {
-  private tareas: Tarea[] = [
-    {
-      id_tarea: 1,
-      id_creador: 1,
-      grupo: 'user',
-      titulo: 'Estudiar Angular',
-      descripcion: 'Practicar componentes y servicios',
-      prioridad: '2:alta',
-      creada: '2026-10-16',
-      terminada: null,
-      estado: 'pendiente'
-    },
-    {
-      id_tarea: 2,
-      id_creador: 2,
-      grupo: 'admin',
-      titulo: 'Preparar documentación',
-      descripcion: 'Revisar las rutas de la API',
-      prioridad: '1:media',
-      creada: '2026-10-16',
-      terminada: null,
-      estado: 'pendiente'
-    }
-  ];
 
-  getAll(): Tarea[] {
-    return this.tareas;
+  private http = inject(HttpClient);
+  private apiUrl = 'http://127.0.0.1:3000/tareas';
+
+  public getAll(): Observable<Tarea[]> {
+    return this.http.get<Tarea[]>(this.apiUrl);
   }
 
-  getById(id: number): Tarea | undefined {
-    return this.tareas.find(t => t.id_tarea === id);
+  public getById(id: number): Observable<Tarea> {
+    return this.http.get<Tarea>(`${this.apiUrl}/${id}`);
   }
 
-  create(tarea: Tarea): void {
-    this.tareas.push(tarea);
+  public create(tarea: Tarea): Observable<Tarea> {
+    const datos: DatosTarea = {
+      id_creador: tarea.id_creador,
+      grupo: tarea.grupo,
+      titulo: tarea.titulo,
+      descripcion: tarea.descripcion,
+      prioridad: tarea.prioridad,
+      terminada: tarea.terminada
+    };
+    return this.http.post<Tarea>(this.apiUrl, datos);
   }
 
-  update(tarea: Tarea): void {
-    const indice = this.tareas.findIndex(
-      t => t.id_tarea === tarea.id_tarea
+  public update(tarea: Tarea): Observable<void> {
+    const datos: DatosTarea = {
+      id_creador: tarea.id_creador,
+      grupo: tarea.grupo,
+      titulo: tarea.titulo,
+      descripcion: tarea.descripcion,
+      prioridad: tarea.prioridad,
+      terminada: tarea.terminada
+    };
+
+    return this.http.patch<void>(
+      `${this.apiUrl}/${tarea.id_tarea}`,
+      datos
     );
-
-    if (indice !== -1) {
-      this.tareas[indice] = tarea;
-    }
   }
 
-  delete(id: number): void {
-    this.tareas = this.tareas.filter(t => t.id_tarea !== id);
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

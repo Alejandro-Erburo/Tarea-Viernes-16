@@ -19,8 +19,9 @@ export class UsuarioForm implements OnInit {
 
   public idUsuario = this.route.snapshot.paramMap.get('id_usuario');
   public esEdicion = this.idUsuario !== null;
-  public usuario: Usuario | undefined;
+  public usuario = signal<Usuario | undefined>(undefined);
   public error = '';
+  public guardando = false;
 
   public datosFormulario = signal({
     username:'',
@@ -35,20 +36,24 @@ export class UsuarioForm implements OnInit {
 
   public ngOnInit(): void {
     if(this.esEdicion){
-      this.usuario = this.usuarioService.getById(Number(this.idUsuario));
-      //console.log('Usuario encontrado:', this.usuario);
-      if(this.usuario){
-        this.datosFormulario.set({
-          username: this.usuario.username,
-          nombres: this.usuario.nombres,
-          apellidos: this.usuario.apellidos,
-          fecha_nacimiento: this.usuario.fecha_nacimiento,
-          grupos: [...this.usuario.grupos],
-          activo: this.usuario.activo
-        });
-      } else {
-        this.error = 'Usuario no encontrado'; 
-      }
+      this.usuarioService.getById(Number(this.idUsuario)).subscribe({
+        next: (usuario) => {
+          this.usuario.set(usuario);
+
+          this.datosFormulario.set({
+            username: usuario.username,
+            nombres: usuario.nombres,
+            apellidos: usuario.apellidos,
+            fecha_nacimiento: usuario.fecha_nacimiento.substring(0, 10),
+            grupos: [...usuario.grupos],
+            activo: usuario.activo
+          });
+        },
+        error: (error) => {
+          console.error('Error al obtener usuario:', error);
+          this.error = 'No se pudo cargar el usuario.';
+        }
+      });
     }
   }
 
@@ -66,30 +71,46 @@ export class UsuarioForm implements OnInit {
       return;
     }
 
-    const usuario: Usuario = {
-      id_usuario: this.usuario?.id_usuario ?? this.generarId(),
+    if (this.guardando) {
+      return;
+    }
+
+    this.error = '';
+    this.guardando = true;
+
+    const datosUsuario = {
       username: datos.username.trim(),
       nombres: datos.nombres.trim(),
       apellidos: datos.apellidos.trim(),
       fecha_nacimiento: datos.fecha_nacimiento,
-      nombre_completo: `${datos.nombres.trim()} ${datos.apellidos.trim()}`,
       grupos: datos.grupos,
       activo: datos.activo
     };
+    
+    const peticion = this.esEdicion
+      ? this.usuarioService.update({
+          ...datosUsuario,
+          id_usuario: Number(this.idUsuario),
+          nombre_completo: this.usuario()?.nombre_completo ?? ''
+        })
+      : this.usuarioService.create({
+          ...datosUsuario,
+          id_usuario: 0,
+          nombre_completo: ''
+        });
 
-    if (this.esEdicion) {
-      this.usuarioService.update(usuario);
-    } else {
-      this.usuarioService.create(usuario);
-    }
-
-    this.router.navigate(['/usuarios']);
-  }
-
-  private generarId(): number {
-    const usuarios = this.usuarioService.getAll();
-
-    return Math.max(0, ...usuarios.map(u => u.id_usuario)) + 1;
+    peticion.subscribe({
+      next: () => {
+        this.guardando = false;
+        this.router.navigate(['/usuarios']);
+      },
+      error: (error) => {
+        console.error('Error al guardar usuario:', error);
+        this.error = error.error?.message ??
+          'No se pudo guardar el usuario.';
+        this.guardando = false;
+      }
+    });
   }
 
   cambiarGrupo(grupo: string): void {

@@ -3,7 +3,7 @@
 <a routerLink="/tareas/crear">Crear nueva tarea</a>
 
 <section class="contenedor-tareas">
-  @for (tarea of tareas; track tarea.id_tarea) {
+  @for (tarea of tareas(); track tarea.id_tarea) {
     <app-tarea-card
       [tarea]="tarea"
       (eliminar)="eliminar($event)"

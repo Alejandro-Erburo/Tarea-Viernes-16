@@ -36,7 +36,8 @@ await app.register(swaggerUI, {
 });
 
 await app.register(cors, {
-  origin: ['http://localhost:4200', 'http://127.0.0.1:4200']
+  origin: ['http://localhost:4200', 'http://127.0.0.1:4200'],
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS']
 });
 
 await app.register(fastifyJwt, {
